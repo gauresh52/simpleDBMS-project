@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Students</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+    }
+
+    /* Navigation Bar */
+    nav {
+      background-color: #1e90ff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    nav h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .actions button {
+      margin-right: 8px;
+      background-color: #ff6b6b;
+    }
+
+    .actions button:first-child {
+      background-color: #ffa502;
+    }
+
+    .actions button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <h2>Student Management</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="enrollments.html">Enrollments</a>
+    </div>
+  </nav>
+  <h1>Add or Update Student Details</h1>
+
+  <div class="container">
+    <!-- Add/Update Form -->
+    <form id="student-form">
+      <input type="number" id="student-id" placeholder="Student ID" required />
+      <input type="text" id="student-name" placeholder="Name" required />
+      <input type="email" id="student-email" placeholder="Email" required />
+      <button type="submit">Add / Update Student</button>
+    </form>
+
+    <!-- Table of Students -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Email</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="student-list">
+        <!-- Students will be loaded here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_URL = "/api/students";
+
+    async function fetchStudents() {
+      const res = await fetch(API_URL);
+      const students = await res.json();
+      const tbody = document.getElementById("student-list");
+      tbody.innerHTML = "";
+      students.forEach(student => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${student.student_id}</td>
+          <td>${student.name}</td>
+          <td>${student.email}</td>
+          <td class="actions">
+            <button onclick='editStudent(${JSON.stringify(student)})'>Edit</button>
+            <button onclick='deleteStudent(${student.student_id})'>Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function editStudent(student) {
+      document.getElementById("student-id").value = student.student_id;
+      document.getElementById("student-name").value = student.name;
+      document.getElementById("student-email").value = student.email;
+    }
+
+    async function deleteStudent(id) {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      fetchStudents();
+    }
+
+    document.getElementById("student-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const student = {
+        student_id: parseInt(document.getElementById("student-id").value),
+        name: document.getElementById("student-name").value,
+        email: document.getElementById("student-email").value,
+      };
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(student)
+      });
+      e.target.reset();
+      fetchStudents();
+    });
+
+    fetchStudents(); // Initial load
+  </script>
+</body>
+</html>

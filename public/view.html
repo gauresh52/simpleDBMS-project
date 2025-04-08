@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Enrollments</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #eef1f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .filters {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      max-width: 800px;
+      margin: 20px auto;
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+
+    th:hover {
+      background-color: #0056b3;
+    }
+
+    #back-button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      width: 200px;
+    }
+
+    #back-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>All Enrollments</h1>
+
+  <div class="filters">
+    <input type="text" id="student-filter" placeholder="Search Student Name" />
+    <input type="text" id="course-filter" placeholder="Search Course Name" />
+    <button id="show-all-btn">Show All</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortTable('student_id')">Student ID</th>
+        <th onclick="sortTable('student_name')">Student Name</th>
+        <th onclick="sortTable('course_id')">Course ID</th>
+        <th onclick="sortTable('course_name')">Course Name</th>
+      </tr>
+    </thead>
+    <tbody id="enrollment-table">
+      <!-- Data will be populated here -->
+    </tbody>
+  </table>
+
+  <a id="back-button" href="index.html">← Back to Home</a>
+
+  <script src="view.js"></script>
+</body>
+</html>

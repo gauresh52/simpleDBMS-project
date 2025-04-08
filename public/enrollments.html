@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Enrollments</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef1f4;
+      margin: 0;
+    }
+
+    nav {
+      background-color: #1e90ff;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    /* nav a {
+      color: white;
+      text-decoration: none;
+      background-color: #007bff;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 14px;
+    } */
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    /* form, table {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    } */
+
+    select {
+      padding: 10px;
+      width: 95%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      padding: 30px;
+      margin: 30px auto;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .actions button {
+      background-color: #dc3545;
+      color: white;
+      margin-right: 5px;
+    }
+
+    .actions button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h2>Enrollment Management</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="students.html">Students</a>
+      <a href="courses.html">Courses</a>
+    </div>
+  </nav>
+
+  <h1>Course Enrollments</h1>
+
+  <div class="container">
+    <!-- Enrollment Form -->
+    <form id="enrollment-form">
+      <select id="student-select" required>
+        <option value="">Select Student</option>
+      </select>
+      <select id="course-select" required>
+        <option value="">Select Course</option>
+      </select>
+      <button type="submit">Enroll Student</button>
+    </form>
+
+    <!-- Table of Enrollments -->
+    <table>
+      <thead>
+        <tr>
+          <th>Student Name</th><th>Course Name</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="enrollment-list">
+        <!-- Enrollments will be loaded here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const STUDENT_API = "/api/students";
+    const COURSE_API = "/api/courses";
+    const ENROLL_API = "/api/enrollments";
+
+    async function loadDropdowns() {
+      const studentRes = await fetch(STUDENT_API);
+      const students = await studentRes.json();
+      const studentSelect = document.getElementById("student-select");
+      students.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.student_id;
+        opt.textContent = `${s.name} (${s.student_id})`;
+        studentSelect.appendChild(opt);
+      });
+
+      const courseRes = await fetch(COURSE_API);
+      const courses = await courseRes.json();
+      const courseSelect = document.getElementById("course-select");
+      courses.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.course_id;
+        opt.textContent = `${c.course_name} (${c.course_id})`;
+        courseSelect.appendChild(opt);
+      });
+    }
+
+    async function loadEnrollments() {
+      const res = await fetch(ENROLL_API);
+      const enrollments = await res.json();
+      const tbody = document.getElementById("enrollment-list");
+      tbody.innerHTML = "";
+      enrollments.forEach(e => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${e.student_name}</td>
+          <td>${e.course_name}</td>
+          <td class="actions">
+            <button onclick="deleteEnrollment(${e.student_id}, ${e.course_id})">Unenroll</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function deleteEnrollment(studentId, courseId) {
+      await fetch(`${ENROLL_API}?student_id=${studentId}&course_id=${courseId}`, { method: "DELETE" });
+      loadEnrollments();
+    }
+
+    document.getElementById("enrollment-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const student_id = document.getElementById("student-select").value;
+      const course_id = document.getElementById("course-select").value;
+
+      await fetch(ENROLL_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: parseInt(student_id), course_id: parseInt(course_id) })
+      });
+
+      e.target.reset();
+      loadEnrollments();
+    });
+
+    loadDropdowns();
+    loadEnrollments();
+  </script>
+</body>
+</html>
