@@ -138,7 +138,7 @@ Server will start on `http://localhost:3000`
 
 ## ✨ Screenshots
 
-<img width="720" alt="Screenshot 1947-01-18 at 10 12 14 AM" src="https://github.com/user-attachments/assets/8c038947-2e55-4d1b-9fdc-7d61010aa582" />
+<img width="480" alt="Screenshot 1947-01-18 at 10 12 14 AM" src="https://github.com/user-attachments/assets/8c038947-2e55-4d1b-9fdc-7d61010aa582" />
 <img width="720" alt="Screenshot 1947-01-18 at 10 12 23 AM" src="https://github.com/user-attachments/assets/38af101c-cc6b-4b2c-9790-a5cf8aab3490" />
 <img width="720" alt="Screenshot 1947-01-18 at 10 12 59 AM" src="https://github.com/user-attachments/assets/47f5e9e8-a7cb-48de-a2bf-4e7e39cf8f1b" />
 
