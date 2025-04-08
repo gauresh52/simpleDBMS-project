@@ -138,7 +138,8 @@ Server will start on `http://localhost:3000`
 
 ## ✨ Screenshots
 
-_Add screenshots of your UI here if needed_
+<img width="1440" alt="Screenshot 1947-01-18 at 10 12 14 AM" src="https://github.com/user-attachments/assets/8c038947-2e55-4d1b-9fdc-7d61010aa582" />
+
 
 ---
 
